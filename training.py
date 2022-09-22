@@ -1,13 +1,13 @@
 import os
 
-import numpy as np
-import tensorflow as tf
+import tensorflow-cpu as tf
 from keras.datasets import mnist
 from matplotlib import pyplot
 
 (train_x, train_y), (test_x, test_y) = mnist.load_data()
 
 print(train_x.shape)
+
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
@@ -33,4 +33,4 @@ print(model.summary())
 
 history = model.fit(x=train_x, y=train_y, epochs=15, batch_size=32, validation_split=0.1)
 
-model.save('/model')
+model.save('model')
