@@ -1,9 +1,3 @@
-import tensorflow as tf
-from docopt import docopt
-import skimage
-import cv2
-import numpy as np
-
 """
 Usage: 
     load_run -f=<filename>
@@ -12,6 +6,12 @@ Options:
     -f=<filename>
 """
 
+from cProfile import label
+import tensorflow as tf
+from docopt import docopt
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def resize_to_28x28(img):
@@ -54,14 +54,39 @@ def run_inference(img):
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Naval Fate 2.0')
-    file = arguments["-f"]
+    file = "./images/testSample/" + arguments["-f"]
 
     image = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
-    run_inference(image)
+    
+    print(type(image))
+    print(image)
+    print(image.shape)
 
 
-model = tf.keras.models.load_model('model')
-model.summary()
+    #run_inference(image)
 
+
+    print(image.shape)
+
+    input = image.reshape(1,28,28,1)
+
+    model = tf.keras.models.load_model('model') 
+    pred = model.predict(input)
+    probs = np.exp(pred) / np.sum(np.exp(pred))
+    
+    print(pred)
+    print(probs)
+
+
+    x = np.arange(10)
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1,2,1)
+    ax1.bar(x, probs[0])
+    ax1.set_title("Probabiliy")
+    ax1.set_xticks(x, ('0', '1', '2', '3','4','5','6','7','8','9'))
+    ax2 = fig.add_subplot(1,2,2)
+    ax2.set_title("Input")
+    ax2.imshow(image)
+    plt.show()
 
 
