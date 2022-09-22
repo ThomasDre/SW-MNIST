@@ -1,7 +1,7 @@
 import tensorflow as tf
-import docopt
+from docopt import docopt
 import skimage
-import opencv
+import cv2
 import numpy as np
 
 """
@@ -22,12 +22,12 @@ def resize_to_28x28(img):
         im_h = (26 * img_h) // img_w
         if im_h <= 0 or img_w <= 0:
             print("Invalid Image Dimention: ", im_h, img_w, img_h)
-        tmp_img = opencv.resize(img, (26,im_h),0,0,opencv.INTER_NEAREST)
+        tmp_img = cv2.resize(img, (26,im_h),0,0,cv2.INTER_NEAREST)
     else:
         im_w = (26 * img_w) // img_h
         if im_w <= 0 or img_h <= 0:
             print("Invalid Image Dimention: ", im_w, img_w, img_h)
-        tmp_img = opencv.resize(img, (im_w, 26),0,0,opencv.INTER_NEAREST)
+        tmp_img = cv2.resize(img, (im_w, 26),0,0,cv2.INTER_NEAREST)
 
     out_img = np.zeros((28, 28), dtype=np.ubyte)
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     arguments = docopt(__doc__, version='Naval Fate 2.0')
     file = arguments["-f"]
 
-    image = opencv.imread(file, opencv.IMREAD_GRAYSCALE)
+    image = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
     run_inference(image)
 
 
