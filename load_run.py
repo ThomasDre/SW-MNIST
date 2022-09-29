@@ -44,7 +44,7 @@ def resize_to_28x28(img):
 
 def run_inference(img):
     tsr_img = resize_to_28x28(img)
-    input_data = np.copy(tsr_img).reshape(1,28,28,1)
+    return tsr_img
 
     # if floating_model:
     #    input_data = (np.float32(input_data) - input_mean) / input_std
@@ -58,25 +58,26 @@ if __name__ == '__main__':
 
     image = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
     
-    print(type(image))
-    print(image)
     print(image.shape)
 
-
-    #run_inference(image)
+    # resize image if it not (28,28)
+    if image.shape[0] != 28 or image.shape[1] != 28:
+        image = run_inference(image)
 
 
     print(image.shape)
 
+    # prepare image for NN
     input = image.reshape(1,28,28,1)
 
     model = tf.keras.models.load_model('model') 
     pred = model.predict(input)
+    
+    # apply the softmax transformation to obtain the probabilities
     probs = np.exp(pred) / np.sum(np.exp(pred))
     
     print(pred)
     print(probs)
-
 
     x = np.arange(10)
     fig = plt.figure()
@@ -88,5 +89,3 @@ if __name__ == '__main__':
     ax2.set_title("Input")
     ax2.imshow(image)
     plt.show()
-
-
